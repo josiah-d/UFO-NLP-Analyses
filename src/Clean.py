@@ -57,4 +57,8 @@ class CleanUFOs:
             self.parse_html(report)
     
     def to_pandas(self):
-        return pd.DataFrame(self.rows)
+        df = pd.DataFrame(self.rows)
+        df['occured'] = pd.to_datetime(df['occured'])
+        df['reported'] = pd.to_datetime(df['reported'])
+
+        return df
