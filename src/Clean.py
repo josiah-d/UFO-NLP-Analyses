@@ -17,8 +17,8 @@ class CleanUFOs:
         self.reports = []
         with open(self.file_path) as f:
             for idx,i in enumerate(f):
-                if idx < 98:
-                    self.reports.append(json.loads(i))
+                # if idx < 98:
+                self.reports.append(json.loads(i))
                 
     def parse_html(self, report):
         try:
@@ -77,7 +77,7 @@ class CleanUFOs:
     
     def to_pandas(self):
         df = pd.DataFrame(self.rows)
-        df['occured'] = pd.to_datetime(df['occured'])
-        df['reported'] = pd.to_datetime(df['reported'])
+        df['occured'] = pd.to_datetime(df['occured'],errors = 'coerce')
+        df['reported'] = pd.to_datetime(df['reported'],errors = 'coerce')
 
         return df
