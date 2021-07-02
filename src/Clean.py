@@ -43,6 +43,7 @@ class CleanUFOs:
 
         duration = body[1]
         duration = duration.split('<')[0]
+        duration = 
 
         description = text_lst[-1].split('">')[3].split('</font>')[0].replace('<br/>', '').strip()
 
