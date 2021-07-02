@@ -21,38 +21,41 @@ class CleanUFOs:
                     self.reports.append(json.loads(i))
                 
     def parse_html(self, report):
-        bs = BS(report['html'], 'html.parser')
+        try:
+            bs = BS(report['html'], 'html.parser')
 
-        text = str(bs.find('tbody'))
-        text_lst = text.split(' : ')
-        occured = text_lst[1]
-        occured = occured.split('  ')[0].strip()
+            text = str(bs.find('tbody'))
+            text_lst = text.split(' : ')
+            occured = text_lst[1]
+            occured = occured.split('  ')[0].strip()
 
-        body = text_lst[2]
-        body_lst = body.split(': ')
+            body = text_lst[2]
+            body_lst = body.split(': ')
 
-        reported = body_lst[1]
-        reported = reported.split('<')[0].strip()
+            reported = body_lst[1]
+            reported = reported.split('<')[0].strip()
 
-        location = body_lst[3]
-        location = location.split('<')[0]
+            location = body_lst[3]
+            location = location.split('<')[0]
 
-        city, state = location.split(', ')
+            city, state = location.split(', ')
 
-        shape = body_lst[4].split('<')[0].strip()
+            shape = body_lst[4].split('<')[0].strip()
 
-        body = body_lst[4].split(':')
+            body = body_lst[4].split(':')
 
-        duration = body[1]
-        duration = duration.split('<')[0]
-        duration = self.adjust_duration(duration)
+            duration = body[1]
+            duration = duration.split('<')[0]
+            duration = self.adjust_duration(duration)
 
-        description = text_lst[-1].split('">')[3].split('</font>')[0].replace('<br/>', '').strip()
+            description = text_lst[-1].split('">')[3].split('</font>')[0].replace('<br/>', '').strip()
 
-        data_dct = {'occured': occured, 'reported': reported, 'city': city, 'state': state,
-                    'shape': shape, 'duration': duration, 'description': description}
+            data_dct = {'occured': occured, 'reported': reported, 'city': city, 'state': state,
+                        'shape': shape, 'duration': duration, 'description': description}
 
-        self.rows.append(data_dct)
+            self.rows.append(data_dct)
+        except:
+            pass
     
     def adjust_duration(self, duration):
         e = re.search('[0-9]+',duration)
