@@ -3,6 +3,8 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import re
+
 
 class CleanUFOs:
     def __init__(self, file_path):
@@ -43,6 +45,7 @@ class CleanUFOs:
 
         duration = body[1]
         duration = duration.split('<')[0]
+        duration = self.adjust_duration(duration)
 
         description = text_lst[-1].split('">')[3].split('</font>')[0].replace('<br/>', '').strip()
 
@@ -51,10 +54,27 @@ class CleanUFOs:
 
         self.rows.append(data_dct)
     
+    def adjust_duration(self, duration):
+        e = re.search('[0-9]+',duration)
+        num = -1
+        multiplier = 1
+        if e is not None:
+            num = e[0]
+        if re.search('min',duration):
+            multiplier = 60
+        if re.search('h',duration):
+            multiplier = 3600
+
+        return int(num)*multiplier
+
     def clean_reports(self):
         for i, report in enumerate(self.reports):
             # print(i)
             self.parse_html(report)
     
     def to_pandas(self):
-        return pd.DataFrame(self.rows)
+        df = pd.DataFrame(self.rows)
+        df['occured'] = pd.to_datetime(df['occured'])
+        df['reported'] = pd.to_datetime(df['reported'])
+
+        return df
